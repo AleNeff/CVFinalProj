@@ -55,6 +55,16 @@ while True:
       mpDraw.draw_landmarks(frame, handslms, mpHands.HAND_CONNECTIONS)
 
       # REPLACE WITH NEAREST NEIGHBOR CHECKS BASED ON POSITIONS
+      
+      """
+      Steps:
+      Have a set with an image for each class's hand
+      Normalize their x and y positions for their landmarks, store those permanently
+      Normalize x and y positions of handlandmarks
+      Do Nearest Neighbors check on the new normed landmarks with each stored set of normed landmarks
+      Closest match (use ratio test) is the predicted handsign.
+      If failing ratio test, don't assign a handsign label
+      """
 
       # # Predict gesture in Hand Gesture Recognition project
       # prediction = model.predict([landmarks])
