@@ -7,7 +7,7 @@ import mediapipe as mp
 
 # initialize mediapipe
 mpHands = mp.solutions.hands
-hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7)
+hands = mpHands.Hands(max_num_hands=2, min_detection_confidence=0.7)
 mpDraw = mp.solutions.drawing_utils
 
 #NOT USING MODEL
@@ -32,9 +32,7 @@ while True:
   # Flip the frame vertically
   frame = cv2.flip(frame, 1)
   # Show the final output
-  cv2.imshow("Output", frame)
-  if cv2.waitKey(1) == ord('q'):
-    break
+ 
 
   framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     # Get hand landmark prediction
@@ -65,7 +63,10 @@ while True:
       # className = classNames[classID]
 
   # show the prediction on the frame
-  # cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2, cv2.LINE_AA)
+  cv2.putText(frame, "Hand", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2, cv2.LINE_AA)
+  cv2.imshow("Output", frame)
+  if cv2.waitKey(1) == ord('q'):
+    break
   # release the webcam and destroy all active windows
 cap.release()
 cv2.destroyAllWindows()
