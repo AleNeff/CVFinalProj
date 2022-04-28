@@ -72,7 +72,7 @@ def fake_dists():
   return fake_dists
 
 def test_funcs():
-  fake_non_target = fake_dists()
+  fake_non_target = fake_dists() # a new hand
   frame = 600, 400, 0
   descriptor = create_descriptor(fake_non_target, frame)
 
@@ -80,5 +80,5 @@ def test_funcs():
   for i in range(5):
     fake_targets.append(create_descriptor(fake_dists(), frame))
 
-  for fake_targ in fake_targets:
+  for fake_targ in fake_targets:  # existing hands
     print(dist_to_target(descriptor, fake_targ))
