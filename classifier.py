@@ -16,18 +16,18 @@ This function re-spreads the x y coordinates, then normalizes based on distance
 from base of hand, and returns a descriptor of these normalized distances to base point.
 The furthest point from the base will be = to 1, all others will be a fraction of this based on relative size.
 """
-def create_descriptor(landmarks, frame_shape):
+def create_descriptor(landmarks):
   if len(landmarks) < 21:
     return []
-  x, y, _ = frame_shape
+  # x, y, _ = frame_shape
   base_x, base_y = landmarks[0]
-  base_x *= x
-  base_y *= y
+  # base_x *= x
+  # base_y *= y
   lm_dists_normed = []
   for i in range(20):
     lm_x, lm_y = landmarks[i+1]
-    lm_x *= x
-    lm_y *= y
+    # lm_x *= x
+    # lm_y *= y
     # √[(x2 – x1)2 + (y2 – y1)2]
     lm_dist = np.sqrt(np.square(lm_x - base_x) + np.square(lm_y - base_y))
     lm_dists_normed.append(lm_dist)
