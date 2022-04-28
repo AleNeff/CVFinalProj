@@ -26,24 +26,24 @@ def predict_labels(X_train, X_test):
     kmeans = KMeans(n_clusters=num_clusters, random_state=0, max_iter=300).fit(X_train)
     pred_labels = kmeans.predict(X_test)
 
-    print(kmeans.labels_)
-    print(pred_labels)
-    print(kmeans.cluster_centers_)
+    # print(kmeans.labels_)
+    # print(pred_labels)
+    # print(kmeans.cluster_centers_)
 
     return(pred_labels)
 
 def test_func():
     X_train = []
     for i in range(5):
-        X_train.append(create_descriptor(fake_dists(), (600, 400, 0)))
+        X_train.append(create_descriptor(fake_dists()))
 
     X_test = []
     for i in range(20):
-        X_test.append(create_descriptor(fake_dists(), (600, 400, 0)))
+        X_test.append(create_descriptor(fake_dists()))
 
     return(predict_labels(X_train, X_test))
 
-print(test_func())
+# print(test_func())
 
     # Fit K neighbors classifier with the histograms and the labels of the training data.
     # neighbors = KNeighborsClassifier().fit(histograms, train_gs[0])
