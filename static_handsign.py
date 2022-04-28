@@ -24,6 +24,9 @@ def generate_truth_data(directory):
       # Read an image, flip it around y-axis for correct handedness output (see
       # above).
       image = cv2.flip(cv2.imread(file.path), 1)
+      # uncomment if you want to visualize all of the hands vvv
+      # annotated_image = image.copy()
+      
       # Convert the BGR image to RGB before processing.
       results = hands.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 
@@ -36,5 +39,9 @@ def generate_truth_data(directory):
           lmy = int(lm.y * image_height)
           landmark_data.append([lmx, lmy])
         hand_data.append(landmark_data)
+        
+      # plotting purposes, comment out to see the points in 3d graph
+      # for hand_world_landmarks in results.multi_hand_world_landmarks:
+      #   mp_drawing.plot_landmarks(
+      #   hand_world_landmarks, mp_hands.HAND_CONNECTIONS, azimuth=5)
   return np.array(hand_data)
-
