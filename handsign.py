@@ -17,18 +17,18 @@ classNames = f.read().split('\n')
 f.close()
 print(classNames)
 
-# Initialize the webcam for Hand Gesture Recognition Python project
+# Initialize the webcam
 cap = cv2.VideoCapture(0)
 
 """
 Get truth data
 """
-truth_data = []
-truth_data.append(static_handsign.generate_truth_data("./images/claws")[0])
-truth_data.append(static_handsign.generate_truth_data("./images/frogs")[0])
-truth_data.append(static_handsign.generate_truth_data("./images/gigem")[0])
-truth_data.append(static_handsign.generate_truth_data("./images/gunsup")[0])
-truth_data.append(static_handsign.generate_truth_data("./images/horns")[0])
+# truth_data = []
+# truth_data.append(static_handsign.generate_truth_data("./images/claws")[0])
+# truth_data.append(static_handsign.generate_truth_data("./images/frogs")[0])
+# truth_data.append(static_handsign.generate_truth_data("./images/gigem")[0])
+# truth_data.append(static_handsign.generate_truth_data("./images/gunsup")[0])
+# truth_data.append(static_handsign.generate_truth_data("./images/horns")[0])
 
 claws_truth_data = static_handsign.generate_truth_data("./images/claws").squeeze()
 claws_descriptors = create_descriptors(claws_truth_data)
@@ -99,7 +99,7 @@ while True:
   # post process the result
   if result.multi_hand_landmarks:
     landmarks = []
-    # signs = np.zeros(5)
+    signs = np.zeros(5)
     for handslms in result.multi_hand_landmarks:
       for lm in handslms.landmark:
           # print(id, lm)
@@ -128,15 +128,16 @@ while True:
       sorted_dists = [dists[x] for x in range(5)]
       sorted_dists.sort()
       ratio = sorted_dists[0] / sorted_dists[1]
-      if ratio < 0.4:
+      ### MAY NEED TO MESS WITH RATIO TO ACCOUNT FOR NEW PENALTY
+      if ratio < 0.6:
         className = classNames[np.argmin(dists)]
       else:
         className = ""
-      # signs[np.argmin(dists)] += 1
+      signs[np.argmin(dists)] += 1
     # className = label_alignment[int(cluster.predict_centroids(new_descriptor, kmodel))]
-    # className = ("claws: " + str(signs[0]) + " frogs: " + str(signs[1]) + " gigem: " + str(signs[2]) + " gunsup: " + str(signs[3]) + " horns: " + str(signs[4]))
+    className = ("claws: " + str(int(signs[0])) + " frogs: " + str(int(signs[1])) + " gigem: " + str(int(signs[2])) + " gunsup: " + str(int(signs[3])) + " horns: " + str(int(signs[4])))
   # show the prediction on the frame
-  cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2, cv2.LINE_AA)
+  cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,0), 2, cv2.LINE_AA)
   cv2.imshow("Output", frame)
   if cv2.waitKey(1) == ord('q'):
     break

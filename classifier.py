@@ -66,8 +66,13 @@ def dist_to_target(descriptor, target_descriptor):
   if len(descriptor) != len(target_descriptor):
     return -1  # error code
   for i in range(len(descriptor)):
+    if i in [3, 7, 11, 19]:
+      ### THUMB, POINTER FINGER, MIDDLE FINGER, AND PINKY FINGER TIPS
+      ### ASSIGN GREATER PENALTY BY MULTIPLYING EUCLIDEAN DIST BY SOME FACTOR
+      pass
+      ###
     euclidean_dist += np.square(descriptor[i] - target_descriptor[i])
-  euclidean_dist = np.sqrt(euclidean_dist)
+  euclidean_dist = np.sqrt(euclidean_dist) ### * PENALTY_FACTOR
   return euclidean_dist
 
 
