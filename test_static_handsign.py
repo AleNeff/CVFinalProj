@@ -15,4 +15,4 @@ truth_descriptors = [classifier.create_descriptor(truth_data[i]) for i in range(
 fake_new_hand = classifier.create_descriptor(truth_data[0])
 # print(truth_descriptors)
 dists = [classifier.dist_to_target(fake_new_hand, truth_descriptors[x]) for x in range(5)]
-# print(dists)
+print(dists)

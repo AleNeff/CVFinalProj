@@ -20,11 +20,11 @@ def create_descriptor(landmarks):
   if len(landmarks) < 21:
     return []
   # x, y, _ = frame_shape
-  base_x, base_y = landmarks[0]
+  base_x, base_y = landmarks[0] # the base here will be considered as the WRIST point, baseXY are acutal pixel coordinates
   # base_x *= x
   # base_y *= y
   lm_dists_normed = []
-  for i in range(20):
+  for i in range(20):  # compute distance between WRIST base and every other point, square, and add up, then sqrt
     lm_x, lm_y = landmarks[i+1]
     # lm_x *= x
     # lm_y *= y
@@ -32,7 +32,7 @@ def create_descriptor(landmarks):
     lm_dist = np.sqrt(np.square(lm_x - base_x) + np.square(lm_y - base_y))
     lm_dists_normed.append(lm_dist)
 
-  max_dist = max(lm_dists_normed)
+  max_dist = max(lm_dists_normed)  # normalization done by dividing each distance by the largest distance measured
   lm_dists_normed = np.array(lm_dists_normed)
   lm_dists_normed /= max_dist
   return lm_dists_normed
@@ -52,7 +52,7 @@ clear winner -- if so, that's the predicted handsign. (ratio test params TBD)
 def dist_to_target(descriptor, target_descriptor):
   euclidean_dist = 0
   if len(descriptor) != len(target_descriptor):
-    return -1
+    return -1  # error code
   for i in range(len(descriptor)):
     euclidean_dist += np.square(descriptor[i] - target_descriptor[i])
   euclidean_dist = np.sqrt(euclidean_dist)
@@ -60,25 +60,24 @@ def dist_to_target(descriptor, target_descriptor):
 
 
 ## TESTING FUNCTIONS
-
-def fake_dists():
-  fake_dists = []
+# gets all of the points of a hand, but fake
+def get_fake_hand_points():
+  fake_hand_points = []
   for i in range(21):
     x = random.randint(0,100)
     y = random.randint(0,100)
     x /= 100
     y /= 100
-    fake_dists.append((x,y))
-  return fake_dists
+    fake_hand_points.append((x,y))
+  return fake_hand_points
 
 def test_funcs():
-  fake_non_target = fake_dists() # a new hand
-  frame = 600, 400, 0
-  descriptor = create_descriptor(fake_non_target, frame)
+  fake_non_target = get_fake_hand_points() # a new hand
+  descriptor = create_descriptor(fake_non_target)
 
   fake_targets = []
   for i in range(5):
-    fake_targets.append(create_descriptor(fake_dists(), frame))
+    fake_targets.append(create_descriptor(get_fake_hand_points()))
 
   for fake_targ in fake_targets:  # existing hands
     print(dist_to_target(descriptor, fake_targ))
