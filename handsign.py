@@ -128,7 +128,7 @@ while True:
       sorted_dists = [dists[x] for x in range(5)]
       sorted_dists.sort()
       ratio = sorted_dists[0] / sorted_dists[1]
-      if ratio < 0.9:
+      if ratio < 0.4:
         className = classNames[np.argmin(dists)]
       else:
         className = ""
