@@ -1,0 +1,1 @@
+from static_handsign import generate_truth_data

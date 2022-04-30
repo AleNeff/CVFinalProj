@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.neighbors import KDTree, KNeighborsClassifier
-from classifier import create_descriptor, fake_dists
+from classifier import create_descriptor, get_fake_hand_points
 
 """
 params:
@@ -39,3 +39,10 @@ def predict_centroids(X_test, kmodel):
 #         X_test.append(create_descriptor(fake_dists()))
 
 #     return(predict_centroids(X_train, X_test))
+
+"""
+Return the center of all of the data points using K-Means. In this case, a 20 dim vector will be returned
+"""
+def get_cluster_center(train_data):
+    kmodel = KMeans(n_clusters=1, max_iter=300).fit(train_data)
+    return kmodel.cluster_centers_[0]

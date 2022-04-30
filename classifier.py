@@ -37,6 +37,18 @@ def create_descriptor(landmarks):
   lm_dists_normed /= max_dist
   return lm_dists_normed
 
+
+"""
+Plural version of create_descriptor
+"""
+def create_descriptors(hands):
+  descriptors = []
+  for hand_lm in hands:
+    descriptor = create_descriptor(hand_lm)
+    descriptors.append(descriptor)
+  return np.array(descriptors)
+
+
 """
 params:
 descriptor: 20-d descriptor of normalized dists to base point

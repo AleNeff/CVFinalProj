@@ -3,7 +3,8 @@ import numpy as np
 import mediapipe as mp
 import classifier
 import static_handsign
-import cluster
+from cluster import get_cluster_center
+from classifier import create_descriptors
 
 # initialize mediapipe
 mpHands = mp.solutions.hands
@@ -28,7 +29,36 @@ truth_data.append(static_handsign.generate_truth_data("./images/frogs")[0])
 truth_data.append(static_handsign.generate_truth_data("./images/gigem")[0])
 truth_data.append(static_handsign.generate_truth_data("./images/gunsup")[0])
 truth_data.append(static_handsign.generate_truth_data("./images/horns")[0])
-truth_descriptors = [classifier.create_descriptor(truth_data[i]) for i in range(len(truth_data))]
+
+claws_truth_data = static_handsign.generate_truth_data("./images/claws").squeeze()
+claws_descriptors = create_descriptors(claws_truth_data)
+claws_cluster_center = get_cluster_center(claws_descriptors).tolist()
+
+frogs_truth_data = static_handsign.generate_truth_data("./images/frogs").squeeze()
+frogs_descriptors = create_descriptors(frogs_truth_data)
+frogs_cluster_center = get_cluster_center(frogs_descriptors).tolist()
+
+gigem_truth_data = static_handsign.generate_truth_data("./images/gigem").squeeze()
+gigem_descriptors = create_descriptors(gigem_truth_data)
+gigem_cluster_center = get_cluster_center(gigem_descriptors).tolist()
+
+gunsup_truth_data = static_handsign.generate_truth_data("./images/gunsup").squeeze()
+gunsup_descriptors = create_descriptors(gunsup_truth_data)
+gunsup_cluster_center = get_cluster_center(gunsup_descriptors).tolist()
+
+horns_truth_data = static_handsign.generate_truth_data("./images/horns").squeeze()
+horns_descriptors = create_descriptors(horns_truth_data)
+horns_cluster_center = get_cluster_center(horns_descriptors).tolist()
+
+# truth_descriptors = [classifier.create_descriptor(truth_data[i]) for i in range(len(truth_data))]
+
+truth_descriptors = [
+  claws_cluster_center, 
+  frogs_cluster_center,
+  gigem_cluster_center,
+  gunsup_cluster_center,
+  horns_cluster_center
+]
 
 # perform clustering
 # kmodel = cluster.build_kmeans(truth_descriptors)
