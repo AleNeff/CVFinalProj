@@ -60,25 +60,6 @@ truth_descriptors = [
   horns_cluster_center
 ]
 
-# perform clustering
-# kmodel = cluster.build_kmeans(truth_descriptors)
-
-# relabel_data = []
-# relabel_data.append(static_handsign.generate_truth_data("./images/claws")[1])
-# relabel_data.append(static_handsign.generate_truth_data("./images/frogs")[1])
-# relabel_data.append(static_handsign.generate_truth_data("./images/gigem")[1])
-# relabel_data.append(static_handsign.generate_truth_data("./images/gunsup")[1])
-# relabel_data.append(static_handsign.generate_truth_data("./images/horns")[1])
-
-# labels = kmodel.predict([classifier.create_descriptor(relabel_data[i]) for i in range(len(relabel_data))])
-# print(labels)
-# label_alignment = {
-#   labels[0]:"claws",
-#   labels[1]:"frogs",
-#   labels[2]:"gigem",
-#   labels[3]:"gunsup",
-#   labels[4]:"horns"
-# }
 while True:
     # image = cv2.imread(r"images\test\two_hands.JPG")
     _, frame = cap.read()

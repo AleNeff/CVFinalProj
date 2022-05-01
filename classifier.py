@@ -19,15 +19,10 @@ The furthest point from the base will be = to 1, all others will be a fraction o
 def create_descriptor(landmarks):
   if len(landmarks) < 21:
     return []
-  # x, y, _ = frame_shape
   base_x, base_y = landmarks[0] # the base here will be considered as the WRIST point, baseXY are acutal pixel coordinates
-  # base_x *= x
-  # base_y *= y
   lm_dists_normed = []
   for i in range(20):  # compute distance between WRIST base and every other point, square, and add up, then sqrt
     lm_x, lm_y = landmarks[i+1]
-    # lm_x *= x
-    # lm_y *= y
     # √[(x2 – x1)2 + (y2 – y1)2]
     lm_dist = np.sqrt(np.square(lm_x - base_x) + np.square(lm_y - base_y))
     lm_dists_normed.append(lm_dist)
@@ -62,17 +57,15 @@ Call 5 times, and then perform ratio test on those 5 distances to see if there i
 clear winner -- if so, that's the predicted handsign. (ratio test params TBD)
 """
 def dist_to_target(descriptor, target_descriptor):
+  PENALTY_FACTOR = 5
   euclidean_dist = 0
   if len(descriptor) != len(target_descriptor):
     return -1  # error code
   for i in range(len(descriptor)):
-    if i in [3, 7, 11, 19]:
-      ### THUMB, POINTER FINGER, MIDDLE FINGER, AND PINKY FINGER TIPS
-      ### ASSIGN GREATER PENALTY BY MULTIPLYING EUCLIDEAN DIST BY SOME FACTOR
-      pass
-      ###
     euclidean_dist += np.square(descriptor[i] - target_descriptor[i])
-  euclidean_dist = np.sqrt(euclidean_dist) ### * PENALTY_FACTOR
+    if i in [3, 7, 11, 19]:
+      euclidean_dist * PENALTY_FACTOR
+  euclidean_dist = np.sqrt(euclidean_dist)
   return euclidean_dist
 
 
