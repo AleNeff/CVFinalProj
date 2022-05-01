@@ -17,18 +17,18 @@ classNames = f.read().split('\n')
 f.close()
 print(classNames)
 
-# Initialize the webcam
+# Initialize the webcam for Hand Gesture Recognition Python project
 cap = cv2.VideoCapture(0)
 
 """
 Get truth data
 """
-# truth_data = []
-# truth_data.append(static_handsign.generate_truth_data("./images/claws")[0])
-# truth_data.append(static_handsign.generate_truth_data("./images/frogs")[0])
-# truth_data.append(static_handsign.generate_truth_data("./images/gigem")[0])
-# truth_data.append(static_handsign.generate_truth_data("./images/gunsup")[0])
-# truth_data.append(static_handsign.generate_truth_data("./images/horns")[0])
+truth_data = []
+truth_data.append(static_handsign.generate_truth_data("./images/claws")[0])
+truth_data.append(static_handsign.generate_truth_data("./images/frogs")[0])
+truth_data.append(static_handsign.generate_truth_data("./images/gigem")[0])
+truth_data.append(static_handsign.generate_truth_data("./images/gunsup")[0])
+truth_data.append(static_handsign.generate_truth_data("./images/horns")[0])
 
 claws_truth_data = static_handsign.generate_truth_data("./images/claws").squeeze()
 claws_descriptors = create_descriptors(claws_truth_data)
@@ -79,68 +79,68 @@ truth_descriptors = [
 #   labels[3]:"gunsup",
 #   labels[4]:"horns"
 # }
-
 while True:
-  # Read each frame from the webcam
-  _, frame = cap.read()
-  x , y, c = frame.shape
+    # image = cv2.imread(r"images\test\two_hands.JPG")
+    _, frame = cap.read()
+    x , y, c = frame.shape
 
-  # Flip the frame vertically
-  frame = cv2.flip(frame, 1)
-  # Show the final output
- 
+    # Flip the frame vertically
+    frame = cv2.flip(frame, 1)
+    # Show the final output
 
-  framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    imagergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     # Get hand landmark prediction
-  result = hands.process(framergb)
+    result = hands.process(imagergb)
 
-  className = ''
+    className = ''
 
-  # post process the result
-  if result.multi_hand_landmarks:
-    landmarks = []
-    signs = np.zeros(5)
-    for handslms in result.multi_hand_landmarks:
-      for lm in handslms.landmark:
-          # print(id, lm)
-          lmx = int(lm.x * x)
-          lmy = int(lm.y * y)
+    # post process the result
+    if result.multi_hand_landmarks:
+        signs = np.zeros(5).astype(int).tolist()
+        # signs = np.zeros(5)
+        for handslms in result.multi_hand_landmarks:
 
-          landmarks.append([lmx, lmy])
+            landmarks = [] 
 
-      # Drawing landmarks on frames
-      mpDraw.draw_landmarks(frame, handslms, mpHands.HAND_CONNECTIONS)
+            for lm in handslms.landmark:
+            # print(id, lm)
+                lmx = int(lm.x * x)
+                lmy = int(lm.y * y)
 
-      # REPLACE WITH NEAREST NEIGHBOR CHECKS BASED ON POSITIONS
-      
-      """
-      Steps:
-      Have a set with an image for each class's hand
-      Normalize their x and y positions for their landmarks, store those permanently
-      Normalize x and y positions of handlandmarks
-      Do Nearest Neighbors check on the new normed landmarks with each stored set of normed landmarks
-      Closest match (use ratio test) is the predicted handsign.
-      If failing ratio test, don't assign a handsign label
-      """
-      new_descriptor = classifier.create_descriptor(landmarks)
-      dists = [classifier.dist_to_target(new_descriptor, truth_descriptors[x]) for x in range(5)]
-      # className = classNames[np.argmin(dists)]
-      sorted_dists = [dists[x] for x in range(5)]
-      sorted_dists.sort()
-      ratio = sorted_dists[0] / sorted_dists[1]
-      ### MAY NEED TO MESS WITH RATIO TO ACCOUNT FOR NEW PENALTY
-      if ratio < 0.6:
-        className = classNames[np.argmin(dists)]
-      else:
-        className = ""
-      signs[np.argmin(dists)] += 1
-    # className = label_alignment[int(cluster.predict_centroids(new_descriptor, kmodel))]
-    className = ("claws: " + str(int(signs[0])) + " frogs: " + str(int(signs[1])) + " gigem: " + str(int(signs[2])) + " gunsup: " + str(int(signs[3])) + " horns: " + str(int(signs[4])))
-  # show the prediction on the frame
-  cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,0), 2, cv2.LINE_AA)
-  cv2.imshow("Output", frame)
-  if cv2.waitKey(1) == ord('q'):
-    break
-  # release the webcam and destroy all active windows
+                landmarks.append([lmx, lmy])
+
+        # Drawing landmarks on frames
+            mpDraw.draw_landmarks(frame, handslms, mpHands.HAND_CONNECTIONS)
+
+        # REPLACE WITH NEAREST NEIGHBOR CHECKS BASED ON POSITIONS
+        
+            """
+            Steps:
+            Have a set with an frame for each class's hand
+            Normalize their x and y positions for their landmarks, store those permanently
+            Normalize x and y positions of handlandmarks
+            Do Nearest Neighbors check on the new normed landmarks with each stored set of normed landmarks
+            Closest match (use ratio test) is the predicted handsign.
+            If failing ratio test, don't assign a handsign label
+            """
+            new_descriptor = classifier.create_descriptor(landmarks)
+            dists = [classifier.dist_to_target(new_descriptor, truth_descriptors[x]) for x in range(5)]
+        # className = classNames[np.argmin(dists)]
+            sorted_dists = [dists[x] for x in range(5)]
+            sorted_dists.sort()
+            ratio = sorted_dists[0] / sorted_dists[1]
+            if ratio < 0.4:
+                className = classNames[np.argmin(dists)]
+            else:
+                className = ""
+            signs[np.argmin(dists)] += 1
+        className = ("claws: " + str(signs[0]) + " frogs: " + str(signs[1]) + " gigem: " + str(signs[2]) + " gunsup: " + str(signs[3]) + " horns: " + str(signs[4]))
+    # show the prediction on the frame
+    cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,0), 2, cv2.LINE_AA)
+    cv2.imshow("Output", frame)
+    if cv2.waitKey(1) == ord('q'):
+        break
+    # release the webcam and destroy all active windows
 cap.release()
 cv2.destroyAllWindows()
