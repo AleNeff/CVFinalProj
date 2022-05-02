@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 import mediapipe as mp
 import classifier
 import static_handsign
@@ -60,6 +61,14 @@ truth_descriptors = [
   horns_cluster_center
 ]
 
+
+# bar chart initialization
+plt.ion()
+fig = plt.figure()
+bar = plt.bar(classNames,[0,0,0,0,0])
+plt.ylim(bottom = 0,top = 10)
+plt.yticks(np.arange(0, 11, step=1))
+
 while True:
     # image = cv2.imread(r"images\test\two_hands.JPG")
     _, frame = cap.read()
@@ -75,10 +84,9 @@ while True:
     result = hands.process(imagergb)
 
     className = ''
-
+    signs = np.zeros(5).astype(int).tolist()
     # post process the result
     if result.multi_hand_landmarks:
-        signs = np.zeros(5).astype(int).tolist()
         # signs = np.zeros(5)
         for handslms in result.multi_hand_landmarks:
 
@@ -120,6 +128,15 @@ while True:
     # show the prediction on the frame
     cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,0), 2, cv2.LINE_AA)
     cv2.imshow("Output", frame)
+    
+    # show predictions in a histogram
+    # to run GUI event loop
+    
+    # update values of bar chart
+    for i in range(len(signs)):
+        bar[i].set_height(signs[i])
+    plt.draw()
+    
     if cv2.waitKey(1) == ord('q'):
         break
     # release the webcam and destroy all active windows
