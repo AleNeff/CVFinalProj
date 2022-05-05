@@ -8,6 +8,9 @@ from cluster import get_cluster_center
 from classifier import create_descriptors
 
 # initialize mediapipe
+"""
+https://google.github.io/mediapipe/solutions/hands.html
+"""
 mpHands = mp.solutions.hands
 hands = mpHands.Hands(max_num_hands=6, min_detection_confidence=0.7)
 mpDraw = mp.solutions.drawing_utils
@@ -51,8 +54,6 @@ horns_truth_data = static_handsign.generate_truth_data("./images/horns").squeeze
 horns_descriptors = create_descriptors(horns_truth_data)
 horns_cluster_center = get_cluster_center(horns_descriptors).tolist()
 
-# truth_descriptors = [classifier.create_descriptor(truth_data[i]) for i in range(len(truth_data))]
-
 truth_descriptors = [
   claws_cluster_center, 
   frogs_cluster_center,
@@ -61,14 +62,17 @@ truth_descriptors = [
   horns_cluster_center
 ]
 
-
-# bar chart initialization
+# hands histogram initialization
 plt.ion()
 fig = plt.figure()
 bar = plt.bar(classNames,[0,0,0,0,0])
 plt.ylim(bottom = 0,top = 10)
 plt.yticks(np.arange(0, 11, step=1))
 
+"""
+Some of the code in this while loop from
+https://techvidvan.com/tutorials/hand-gesture-recognition-tensorflow-opencv/
+"""
 while True:
     # image = cv2.imread(r"images\test\two_hands.JPG")
     _, frame = cap.read()
@@ -77,7 +81,6 @@ while True:
     # Flip the frame vertically
     frame = cv2.flip(frame, 1)
     # Show the final output
-
 
     imagergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     # Get hand landmark prediction
@@ -99,10 +102,8 @@ while True:
 
                 landmarks.append([lmx, lmy])
 
-        # Drawing landmarks on frames
+            # Drawing landmarks on frames
             mpDraw.draw_landmarks(frame, handslms, mpHands.HAND_CONNECTIONS)
-
-        # REPLACE WITH NEAREST NEIGHBOR CHECKS BASED ON POSITIONS
         
             """
             Steps:
@@ -115,14 +116,15 @@ while True:
             """
             new_descriptor = classifier.create_descriptor(landmarks)
             dists = [classifier.dist_to_target(new_descriptor, truth_descriptors[x]) for x in range(5)]
-        # className = classNames[np.argmin(dists)]
             sorted_dists = [dists[x] for x in range(5)]
             sorted_dists.sort()
+            # ratio test
             ratio = sorted_dists[0] / sorted_dists[1]
             if ratio < 0.4:
                 className = classNames[np.argmin(dists)]
             else:
                 className = ""
+            # incremement that hand's count
             signs[np.argmin(dists)] += 1
         className = ("claws: " + str(signs[0]) + " frogs: " + str(signs[1]) + " gigem: " + str(signs[2]) + " gunsup: " + str(signs[3]) + " horns: " + str(signs[4]))
     # show the prediction on the frame

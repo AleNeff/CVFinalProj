@@ -1,3 +1,6 @@
+"""
+With many different implementation options we kept this around so we could experiment and easily compare with original code
+"""
 import cv2
 import numpy as np
 import mediapipe as mp

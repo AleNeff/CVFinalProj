@@ -1,3 +1,6 @@
+"""
+File where we initially experimented with truth descriptors to represent gestures
+"""
 import static_handsign
 import classifier
 import numpy as np
